@@ -9,15 +9,22 @@
       projectId: projectId
     });
 
-    // The name for the new topic
-    const topicName = 'my-new-topic';
 
-    // Creates the new topic
-    pubsubClient.createTopic(topicName)
-      .then((results) => {
-        const topic = results[0];
-        console.log(`Topic ${topic.name} created.`);
-      })
-      .catch((err) => {
-        console.error('ERROR:', err);
-      });
+WatchRequest wr = new WatchRequest();
+wr.TopicName = "projects/" + primaryLink.ggProjectId + "/topics/iLink" + segmentId;
+if (labels != null && labels.Count > 0)
+{
+    wr.LabelIds = new List<string>();
+    wr.LabelIds.Add("Label_1");
+    wr.LabelFilterAction = "include";
+}
+
+WatchResponse wrr = gs.Users.Watch(wr, emailAccount).Execute();
+return "HistoryId " + wrr.HistoryId.ToString();
+
+  
+
+
+
+    
+
