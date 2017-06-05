@@ -18,13 +18,14 @@ topic.subscribe('mySub2', function(err, subscription) {
   }
   function onMessage(message) {
     console.log('subscription!');
+    console.log(message.data);
   }
-  subscription.on('error', onError);
-  subscription.on('message', onMessage);
+  //subscription.on('error', onError);
+  //subscription.on('message', onMessage);
  
   // Remove listeners to stop pulling for messages. 
-  subscription.removeListener('message', onMessage);
-  subscription.removeListener('error', onError);
+  //subscription.removeListener('message', onMessage);
+  //subscription.removeListener('error', onError);
 
   //console.log(subscription);
 });
@@ -240,4 +241,7 @@ function watchAccount(auth) {
         console.log(JSON.stringify(res, null, 4));
     });
  }
+
+
+
 
