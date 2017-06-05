@@ -220,8 +220,6 @@ function listLabels(auth) {
   });
 }
 
-var history;
-
 function watchAccount(auth) {
     console.log('watching account');
     var gmail = google.gmail('v1');
@@ -243,19 +241,12 @@ function watchAccount(auth) {
         // doSomething here;
         //console.log(res);
         console.log(JSON.stringify(res, null, 4));
-        if(res.historyId != history){
-          history = res.historyId;
-          console.log('update: ' + history);
-        }
-        
-
-        //console.log(history);
     });
  }
 
  setInterval(function(auth) { 
   login();
-  console.log('Checking notification'); 
+  console.log("setInterval: It's been one second!"); 
   }, 2000);
 
 
