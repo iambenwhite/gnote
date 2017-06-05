@@ -1,24 +1,85 @@
-// var rp = require('request-promise');
 
-// // Imports the Google Cloud client library
-//     const PubSub = require('@google-cloud/pubsub');
 
-//     // Your Google Cloud Platform project ID
-//     const projectId = 'avian-voice-169309';
+var pubsub = require('@google-cloud/pubsub')({
+  projectId: 'avian-voice-169309',
+  keyFilename: 'sense-dc1eff8881e8.json'
+});
 
-//     // Instantiates a client
-//     const pubsubClient = PubSub({
-//       projectId: projectId
-//     });
+var topic = pubsub.topic('myTopic2');
+var subscription = topic.subscription('mySub2');
 
-//     // The name for the current topic
-//     const topicName = 'myTopic2';
 
-//     // The name for the current subscription
-//     const subscriptionName = 'mySub2';
+topic.subscribe('mySub2', function(err, subscription) {
+  // Register listeners to start pulling for messages. 
+  console.log('watching subscription');
 
-    //------------
+  function onError(err) {
+    console.log('topic subscription error: ' + err);
+  }
+  function onMessage(message) {
+    console.log('subscription!');
+  }
+  subscription.on('error', onError);
+  subscription.on('message', onMessage);
+ 
+  // Remove listeners to stop pulling for messages. 
+  subscription.removeListener('message', onMessage);
+  subscription.removeListener('error', onError);
 
+  //console.log(subscription);
+});
+
+pubsub.getSubscriptions(function(err, subscriptions) {
+  //console.log(subscriptions);
+});
+
+// function onMessage(message) {
+//   console.log('watching it!');
+// }
+
+/* 
+// Reference a topic that has been previously created. 
+var topic = pubsub.topic('myTopic2');
+ 
+// Publish a message to the topic. 
+topic.publish('New message!', function(err) {});
+ 
+// Subscribe to the topic. 
+topic.subscribe('mySub2', function(err, subscription) {
+  // Register listeners to start pulling for messages. 
+  function onError(err) {}
+  function onMessage(message) {}
+  subscription.on('error', onError);
+  subscription.on('message', onMessage);
+ 
+  // Remove listeners to stop pulling for messages. 
+  subscription.removeListener('message', onMessage);
+  subscription.removeListener('error', onError);
+
+  //console.log(subscription);
+});
+
+
+function onMessage(message) {
+  // Called every time a message is received.
+
+  // message.id = ID of the message.
+  // message.ackId = ID used to acknowledge the message receival.
+  // message.data = Contents of the message.
+  // message.attributes = Attributes of the message.
+  // message.timestamp = Timestamp when Pub/Sub received the message.
+
+  // Ack the message:
+  // message.ack(callback);
+
+  // Skip the message. This is useful with `maxInProgress` option when
+  // creating your subscription. This doesn't ack the message, but allows
+  // more messages to be retrieved if your limit was hit.
+  // message.skip();
+  console.log('watching it!');
+}
+
+*/
 
 var fs = require('fs');
 var readline = require('readline');
@@ -133,39 +194,30 @@ function storeToken(token) {
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-// function listLabels(auth) {
-//   var gmail = google.gmail('v1');
-//   gmail.users.labels.list({
-//     auth: auth,
-//     userId: 'me',
-//   }, function(err, response) {
-//     if (err) {
-//       console.log('The API returned an error: ' + err);
-//       return;
-//     }
-//     var labels = response.labels;
-//     if (labels.length == 0) {
-//       console.log('No labels found.');
-//     } else {
-//       console.log('Labels:');
-//       for (var i = 0; i < labels.length; i++) {
-//         var label = labels[i];
-//         console.log('- %s', label.name);
-//       }
-//     }
-//   });
-// }
+function listLabels(auth) {
+  var gmail = google.gmail('v1');
+  gmail.users.labels.list({
+    auth: auth,
+    userId: 'me',
+  }, function(err, response) {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+    }
+    var labels = response.labels;
+    if (labels.length == 0) {
+      console.log('No labels found.');
+    } else {
+      console.log('Labels:');
+      for (var i = 0; i < labels.length; i++) {
+        var label = labels[i];
+        console.log('- %s', label.name);
+      }
+    }
+  });
+}
 
-/**
- * watch user's account.
- */
-
- function testFunction1()
- {
-    console.log('testing');
- }
-
- function watchAccount(auth) {
+function watchAccount(auth) {
     console.log('watching account');
     var gmail = google.gmail('v1');
     var options = {
@@ -184,83 +236,8 @@ function storeToken(token) {
             return;
         }
         // doSomething here;
-        console.log(res);
+        //console.log(res);
+        console.log(JSON.stringify(res, null, 4));
     });
  }
 
- //gmail.users().watch(userId='me', body=request).execute()
-
-
-function watchAccount2(auth){
-
-rp({
-  url: "https://www.googleapis.com/gmail/v1/users/me/watch",
-  method: "POST",
-  headers: {
-    Authorization: 'Bearer accessToken'
-  },
-  json: {     
-    topicName: 'projects/avian-voice-169309/topics/myTopic2',
-    labelIds: ['INBOX']
-  }});
-
-}
-
-
-
-
- /////////////////////
-
-//test permissions
-//testTopicPermissions(topicName);
-//testSubscriptionPermissions(subscriptionName);
-
- //test permissions
- function testTopicPermissions (topicName) {
-  // Instantiates a client
-  const pubsub = PubSub();
-
-  // References an existing topic, e.g. "my-topic"
-  //const topic = pubsub.topic(topicName);
-  var topicName = topicName;
-  const topic = pubsub.topic(topicName);
-
-  const permissionsToTest = [
-    `pubsub.topics.attachSubscription`,
-    `pubsub.topics.publish`,
-    `pubsub.topics.update`
-  ];
-
-  // Tests the IAM policy for the specified topic
-  return topic.iam.testPermissions(permissionsToTest)
-    .then((results) => {
-      const permissions = results[0];
-
-      console.log(`Tested permissions for topic: %j`, permissions);
-
-      return permissions;
-    });
-}
-
-function testSubscriptionPermissions (subscriptionName) {
-  // Instantiates a client
-  const pubsub = PubSub();
-
-  // References an existing subscription, e.g. "my-subscription"
-  const subscription = pubsub.subscription(subscriptionName);
-
-  const permissionsToTest = [
-    `pubsub.subscriptions.consume`,
-    `pubsub.subscriptions.update`
-  ];
-
-  // Tests the IAM policy for the specified subscription
-  subscription.iam.testPermissions(permissionsToTest)
-    .then((results) => {
-      const permissions = results[0];
-
-      console.log(`Tested permissions for subscription: %j`, permissions);
-
-      return permissions;
-    });
-}
