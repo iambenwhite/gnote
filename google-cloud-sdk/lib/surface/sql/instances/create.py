@@ -163,11 +163,11 @@ class Create(base.CreateCommand):
         type=arg_parsers.BoundedInt(lower_bound=0, upper_bound=23),
         help='Hour of day for maintenance window, in UTC time zone.')
     parser.add_argument(
-        '--master-instance-name',
+        '--main-instance-name',
         required=False,
-        help=('Name of the instance which will act as master in the '
+        help=('Name of the instance which will act as main in the '
               'replication setup. The newly created instance will be a read '
-              'replica of the specified master instance.'))
+              'replica of the specified main instance.'))
     parser.add_argument(
         '--memory',
         type=arg_parsers.BinarySize(),

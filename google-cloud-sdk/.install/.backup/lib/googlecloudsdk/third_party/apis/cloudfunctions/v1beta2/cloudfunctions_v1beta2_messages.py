@@ -75,7 +75,7 @@ class CloudFunction(_messages.Message):
       evelopers.google.com/projects/*/repos/*/revisions/*/paths/*` To refer to
       a moveable alias (branch): `https://source.developers.google.com/project
       s/*/repos/*/aliases/movable/*/paths/*` In particular, to refer to HEAD
-      use `master` moveable alias. To refer to a specific fixed alias (tag): `
+      use `main` moveable alias. To refer to a specific fixed alias (tag): `
       https://source.developers.google.com/projects/*/repos/*/aliases/fixed/*/
       paths/*`  You may omit `paths/*` if you want to use the main directory.
     sourceUploadUrl: The Google Cloud Storage signed URL used for source
